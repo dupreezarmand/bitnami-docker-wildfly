@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+service ssh start
+
 . /opt/bitnami/base/functions
 . /opt/bitnami/base/helpers
 

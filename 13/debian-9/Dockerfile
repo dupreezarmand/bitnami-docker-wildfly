@@ -7,7 +7,11 @@ RUN bitnami-pkg install java-1.8.181-1 --checksum 66bba4b4a2647f981339d306da7969
 RUN bitnami-pkg unpack wildfly-13.0.0-0 --checksum 8000b1947ea78c207c620a88ffe9b459dbc28e92cd9d7d89a2f0421693696c84
 RUN ln -sf /opt/bitnami/wildfly/data /app
 
+RUN apt-get update && apt-get install -y --no-install-recommends openssh-server && echo "root:Docker!" | chpasswd
+
+COPY sshd_config /etc/ssh/
 COPY rootfs /
+
 ENV BITNAMI_APP_NAME="wildfly" \
     BITNAMI_IMAGE_VERSION="13.0.0-debian-9-r54" \
     PATH="/opt/bitnami/java/bin:/opt/bitnami/wildfly/bin:$PATH" \
@@ -23,7 +27,7 @@ ENV BITNAMI_APP_NAME="wildfly" \
     WILDFLY_WILDFLY_HOME="/home/wildfly" \
     WILDFLY_WILDFLY_OPTS="-Dwildfly.as.deployment.ondemand=false"
 
-EXPOSE 8080 9990
+EXPOSE 8080 9990 2222
 
 ENTRYPOINT [ "/app-entrypoint.sh" ]
 CMD [ "nami", "start", "--foreground", "wildfly" ]
